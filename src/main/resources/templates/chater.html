@@ -45,6 +45,23 @@
 
         const websocket =new WebSocket("ws://localhost:8080/ws/chat");
 
+        websocket.onmessage =onMessage;
+        websocket.onopen =onOpen;
+        websocket.onclose =onClose;
+
+        function send(){
+
+            let msg=document.getElementById("msg");
+
+            console.log(username + ":" + msg.value);
+            websocket.send(username+":"+msg.value);
+            msg.value='';
+        }
+
+          function onClose(evt){
+
+          }
+
     })
 
 </script>
