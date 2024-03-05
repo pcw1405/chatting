@@ -25,7 +25,7 @@ public class ChatRoom {
     }
 
     // handleActions를 통해 분기처릴르 한다
-    public void handleActions(WebSocketSession session, ChatService chatService, ChatMessage chatMessage){
+    public void handleActions(WebSocketSession session,  ChatMessage chatMessage,ChatService chatService){
         if(chatMessage.getType().equals(ChatMessage.MessageType.ENTER)){
             sessions.add(session);
             chatMessage.setMessage(chatMessage.getSender()+ "님이 입장하셨습니다");
