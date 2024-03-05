@@ -17,17 +17,16 @@ import java.util.List;
 @Component
 @Log4j2
 public class ChatHandler extends TextWebSocketHandler {
+    // 여러 클라이언트가 받아 처리해줄 handler
     private static List<WebSocketSession> list=new ArrayList<>();
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception{
         String payload = message.getPayload();
-        log.info("payload:" + payload);
+        log.info("payload {}" + payload);
         //페이로드란 전송되는 데이터를 의미한다
-
-        for(WebSocketSession sess: list){
-            sess.sendMessage(message);
-        }
+        TextMessage textMessage = new TextMessage("Welcome to chat server");
+        session.sendMessage(textMessage);
     }
 
     // Client가 접속 시 호출 되는 메서드

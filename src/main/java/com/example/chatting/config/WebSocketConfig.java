@@ -22,6 +22,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry){
         registry.addHandler(chatHandler,"ws/chat").setAllowedOrigins("*");
     }
+//    도메인이 다른 서버에 접속할 수 있도록
 
 
 
