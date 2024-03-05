@@ -1,16 +1,29 @@
 package com.example.chatting.controller;
 
+import com.example.chatting.dto.ChatRoom;
+import com.example.chatting.service.ChatService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
-@Log4j2
+import java.util.List;
+
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/chat")
 public class ChatController {
 
-    @GetMapping("/chat")
-    public String chatGET(){
-        log.info("@ChatController.chat GET()");
-        return "chater";
+    private final ChatService chatService;
+
+    @PostMapping
+    public ChatRoom createRoom(@RequestParam String name){
+        return chatService.createRoom(name);
     }
+
+    @GetMapping
+    public List<ChatRoom> findAllRoom(){
+        return chatService.findAllRoom();
+    }
+
 }
