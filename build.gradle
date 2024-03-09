@@ -36,6 +36,7 @@ dependencies {
 	implementation 'org.webjars:sockjs-client:1.1.2'
 	implementation 'org.webjars:stomp-websocket:2.3.3-1'
 
+
 	//json
 	//implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.2'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -43,6 +44,16 @@ dependencies {
 //	compileOnly 'org.projectlombok:lombok'
 
 	testImplementation 'org.springframework.security:spring-security-test'
+
+	implementation 'org.springframework.boot:spring-boot-starter-freemarker'
+
+	implementation 'com.google.code.gson:gson:2.8.0'
+
+	implementation 'org.webjars.bower:bootstrap:4.3.1'
+	implementation 'org.webjars.bower:vue:2.5.16'
+	implementation 'org.webjars.bower:axios:0.17.1'
+	implementation 'org.springframework.boot:spring-boot-devtools'
+
 }
 
 tasks.named('test') {

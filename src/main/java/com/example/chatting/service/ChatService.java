@@ -53,6 +53,7 @@ public class ChatService {
 
         }catch (IOException e){
             log.error(e.getMessage(),e);
+            System.out.println("메시지를 보내는데 성공하지못했다 ");
         }
     }
 
