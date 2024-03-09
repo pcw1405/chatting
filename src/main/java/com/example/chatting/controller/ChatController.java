@@ -1,10 +1,7 @@
 package com.example.chatting.controller;
 
 import com.example.chatting.dto.ChatRoom;
-import com.example.chatting.service.ChatService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
