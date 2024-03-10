@@ -1,0 +1,93 @@
+!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>Websocket ChatRoom</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app" style="display: none;">
+    <div>
+        <h2 id="roomName"></h2>
+    </div>
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <label class="input-group-text">내용</label>
+        </div>
+        <input type="text" class="form-control" id="message" onkeypress="if(event.keyCode==13) sendMessage()">
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="button" onclick="sendMessage()">보내기</button>
+        </div>
+    </div>
+    <ul class="list-group" id="messageList"></ul>
+    <div></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs/dist/stomp.min.js"></script>
+<script>
+        var sock = new SockJS("/ws-stomp");
+        var ws = Stomp.over(sock);
+        var reconnect = 0;
+
+        $(document).ready(function () {
+            connect();
+            var roomId = localStorage.getItem('wschat.roomId');
+            var sender = localStorage.getItem('wschat.sender');
+            findRoom(roomId, sender);
+        });
+
+        function findRoom(roomId, sender) {
+            axios.get('/chat/room/' + roomId).then(function (response) {
+                $('#roomName').text(response.data.name);
+            });
+        }
+
+        function sendMessage() {
+            var roomId = localStorage.getItem('wschat.roomId');
+            var sender = localStorage.getItem('wschat.sender');
+            var message = $('#message').val();
+            ws.send("/pub/chat/message", {}, JSON.stringify({ type: 'TALK', roomId: roomId, sender: sender, message: message }));
+            $('#message').val('');
+        }
+
+        function recvMessage(recv) {
+            var senderText = recv.type == 'ENTER' ? '[알림]' : recv.sender;
+            var messageText = recv.type + ' - ' + senderText + ' - ' + recv.message;
+            $('#messageList').prepend('<li class="list-group-item">' + messageText + '</li>');
+        }
+
+        function connect() {
+            ws.connect({}, function (frame) {
+                var roomId = localStorage.getItem('wschat.roomId');
+                var sender = localStorage.getItem('wschat.sender');
+
+                ws.subscribe("/sub/chat/room/" + roomId, function (message) {
+                    var recv = JSON.parse(message.body);
+                    recvMessage(recv);
+                });
+
+                ws.send("/pub/chat/message", {}, JSON.stringify({ type: 'ENTER', roomId: roomId, sender: sender }));
+            }, function (error) {
+                if (reconnect++ <= 5) {
+                    setTimeout(function () {
+                        console.log("connection reconnect");
+                        sock = new SockJS("/ws-stomp");
+                        ws = Stomp.over(sock);
+                        connect();
+                    }, 10 * 1000);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
