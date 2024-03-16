@@ -2,5 +2,13 @@ spring:
   profiles:
     active: alpha
   redis:
-    host: Standalone Redis 호스트
-    port: Standalone Redis 포트
+    lettuce:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-active: 8
+    host: 192.168.1.100
+    port: 6379       # 실제 Redis 서버의 포트
+    password: ''
+  server:
+    port: 8090
