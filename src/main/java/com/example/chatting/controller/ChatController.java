@@ -20,7 +20,7 @@ public class ChatController {
     private final RedisPublisher redisPublisher;
     private final ChatRoomRepository chatRoomRepository;
 
-    @MessageMapping("/chat/message")
+    @MessageMapping("chat/message")
     public void message(ChatMessage message){
         if(ChatMessage.MessageType.ENTER.equals(message.getType())) {
             chatRoomRepository.enterChatRoom(message.getRoomId());
