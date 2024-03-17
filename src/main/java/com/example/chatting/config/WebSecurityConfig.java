@@ -16,28 +16,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .headers()
-                    .frameOptions().sameOrigin()
+                .frameOptions().sameOrigin()
                 .and()
-                    .formLogin()
+                .formLogin()
                 .and()
-                    .authorizeRequests()
-                        .antMatchers("/chat/**").hasRole("USER")
-                        .anyRequest().permitAll();
+                .authorizeRequests()
+                .antMatchers("/chat/**").hasRole("USER")
+                .anyRequest().permitAll();
     }
     /** 테스트를 위해 In-memory에 계정을 임의로 생성한다.
      **/
 
     protected void configure(AuthenticationManagerBuilder auth) throws Exception{
         auth.inMemoryAuthentication()
-                    .withUser("happydaddy")
-                    .password("{noop}1234")
-                    .roles("USER")
+                .withUser("happy")
+                .password("{noop}1234")
+                .roles("USER")
                 .and()
-                    .withUser("a")
-                    .password("{noop}1234")
-                    .roles("USER")
+                .withUser("cool")
+                .password("{noop}1234")
+                .roles("USER")
                 .and()
-                .withUser("a")
+                .withUser("guest")
                 .password("{noop}1234")
                 .roles("GUEST");
     }
