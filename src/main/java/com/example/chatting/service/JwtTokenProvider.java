@@ -1,6 +1,7 @@
 package com.example.chatting.service;
 
 //import io.jsonwebtoken.*;
+
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,14 +35,14 @@ public class JwtTokenProvider {
     public String getUserNameFromJwt(String jwt ){
         return getClaims(jwt).getBody().getId();
     }
-//    유효성을 검사한다
+    //    유효성을 검사한다
     public boolean validateToken(String jwt ){
         return this.getClaims(jwt)!=null;
     }
 
-    public Jwt<Claims> getClaims(String jwt){
+    public Jws<Claims> getClaims(String jwt){
         try{
-            return Jwts.parser().setSigningKey(secretKey).parseClaimsJwt(jwt);
+            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwt);
         } catch (SignatureException ex) {
             log.error("Invalid JWT signature");
             throw ex;
@@ -59,6 +60,7 @@ public class JwtTokenProvider {
             throw ex;
         }
     }
+
 
 }
 
