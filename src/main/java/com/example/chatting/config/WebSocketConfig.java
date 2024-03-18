@@ -1,7 +1,9 @@
 package com.example.chatting.config;
 
+import com.example.chatting.config.handler.StompHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.*;
 
@@ -12,7 +14,7 @@ import org.springframework.web.socket.config.annotation.*;
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 //    private final WebSocketChatHandler chatHandler;
-
+    private StompHandler stompHandler;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config){
@@ -37,6 +39,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 //    }
 //    도메인이 다른 서버에 접속할 수 있도록
 
+
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration){
+        registration.interceptors(stompHandler);
+    }
 
 
 }

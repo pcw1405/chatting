@@ -9,6 +9,9 @@ public class LoginInfo {
     private String token;
 
     @Builder
-    public LoginInfo(String name,String TO)
+    public LoginInfo(String name,String token){
+        this.name=name;
+        this.token=token;
+    }
 
 }
