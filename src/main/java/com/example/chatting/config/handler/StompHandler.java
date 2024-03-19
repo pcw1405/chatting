@@ -26,16 +26,8 @@ public class StompHandler implements ChannelInterceptor {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         // websocket 연결시 헤더의 jwt token 검증
         if (StompCommand.CONNECT == accessor.getCommand()) {
-            try {
-                jwtTokenProvider.validateToken(accessor.getFirstNativeHeader("token"));
-            } catch (Exception e) {
-                log.error("JWT 토큰 유효성 검증 중 오류 발생: {}", e.getMessage());
-                System.out.println("토큰 유효성 검증 중 오류 발생");
-                // 예외 처리를 추가하거나 원하는 대응을 수행할 수 있습니다.
-                // 예를 들어, 유효하지 않은 토큰에 대한 응답을 전송할 수 있습니다.
-                // 예를 들어, 연결을 거부하거나, 연결이 실패했다는 메시지를 보낼 수 있습니다.
-                // 원하는 처리 방법에 따라 구현하세요.
-            }
+
+            jwtTokenProvider.validateToken(accessor.getFirstNativeHeader("token"));
         }
         return message;
     }
