@@ -1,5 +1,7 @@
 package com.example.chatting.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.example.chatting.dto.ChatRoom;
 import com.example.chatting.dto.LoginInfo;
@@ -56,8 +58,22 @@ public class ChatRoomController {
     @GetMapping("/user")
     @ResponseBody
     public LoginInfo getUserInfo() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String name = auth.getName();
-        return LoginInfo.builder().name(name).token(jwtTokenProvider.generateToken(name)).build();
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.isAuthenticated()) {
+                String name = auth.getName();
+                String token = jwtTokenProvider.generateToken(name);
+                return LoginInfo.builder().name(name).token(token).build();
+            } else {
+                // 인증되지 않은 경우에 대한 처리
+                throw new RuntimeException("User is not authenticated");
+            }
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            // 예상치 못한 예외 발생 시 로깅하고 다시 던지기
+            System.out.println("Error occurred while fetching user information: " + e.getMessage());
+            throw new RuntimeException("Internal Server Error");
+        }
     }
 }
