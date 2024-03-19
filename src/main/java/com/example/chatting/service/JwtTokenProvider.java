@@ -22,13 +22,27 @@ public class JwtTokenProvider {
      * 이름으로 Jwt Token을 생성한다.
      */
     public String generateToken(String name) {
-        Date now = new Date();
-        return Jwts.builder()
-                .setId(name)
-                .setIssuedAt(now) // 토큰 발행일자
-                .setExpiration(new Date(now.getTime() + tokenValidMilisecond)) // 유효시간 설정
-                .signWith(SignatureAlgorithm.HS256, secretKey) // 암호화 알고리즘, secret값 세팅
-                .compact();
+        try {
+            if (name == null || secretKey == null) {
+                String errorMessage = "Name or secretKey is null.";
+                log.error(errorMessage);
+                throw new IllegalArgumentException("Name or secretKey is null.");
+            }
+
+            Date now = new Date();
+            return Jwts.builder()
+                    .setId(name)
+                    .setIssuedAt(now) // 토큰 발행일자
+                    .setExpiration(new Date(now.getTime() + tokenValidMilisecond)) // 유효시간 설정
+                    .signWith(SignatureAlgorithm.HS256, secretKey) // 암호화 알고리즘, secret값 세팅
+                    .compact();
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid argument: {}", e.getMessage());
+            throw new RuntimeException("Internal Server Error");
+        } catch (Exception e) {
+            log.error("Error occurred while generating token: {}", e.getMessage(), e);
+            throw new RuntimeException("Internal Server Error");
+        }
     }
 
     /**

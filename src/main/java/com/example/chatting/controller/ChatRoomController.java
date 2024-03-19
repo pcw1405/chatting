@@ -65,7 +65,9 @@ public class ChatRoomController {
             if (auth != null && auth.isAuthenticated()) {
                 log.info("인증되었습니다.");
                 String name = auth.getName();
+                log.info("이름은"+ name);
                 String token = jwtTokenProvider.generateToken(name);
+                log.info("토큰 클리어");
                 return LoginInfo.builder().name(name).token(token).build();
             } else {
                 // 인증되지 않은 경우에 대한 처리
