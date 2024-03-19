@@ -2,9 +2,11 @@ package com.example.chatting.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class ChatMessage {
 
     public enum MessageType{

@@ -3,45 +3,50 @@ package com.example.chatting.service;
 //import io.jsonwebtoken.*;
 
 import io.jsonwebtoken.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-
 @Slf4j
 @Component
 public class JwtTokenProvider {
 
     @Value("${spring.jwt.secret}")
     private String secretKey;
+    private long tokenValidMilisecond = 1000L * 60 * 60; // 1시간만 토큰 유효
 
-    private long tokenValidMilisecond = 100L * 60 * 60 ;
-    //1시간만 토근이 가능하도록 설정
-
-//    name으로 jwt토큰을 만든다
-    public String generateToken(String name){
-        Date now =new Date();
+    /**
+     * 이름으로 Jwt Token을 생성한다.
+     */
+    public String generateToken(String name) {
+        Date now = new Date();
         return Jwts.builder()
                 .setId(name)
                 .setIssuedAt(now) // 토큰 발행일자
-                .setExpiration(new Date(now.getTime()+tokenValidMilisecond))
-                    //유효시간 설정
-                .signWith(SignatureAlgorithm.ES256,secretKey)
-                // 암호화 알고리즘 ,secret 값
+                .setExpiration(new Date(now.getTime() + tokenValidMilisecond)) // 유효시간 설정
+                .signWith(SignatureAlgorithm.HS256, secretKey) // 암호화 알고리즘, secret값 세팅
                 .compact();
     }
-    // 복호화하여 이름을 얻는다
-    public String getUserNameFromJwt(String jwt ){
+
+    /**
+     * Jwt Token을 복호화 하여 이름을 얻는다.
+     */
+    public String getUserNameFromJwt(String jwt) {
         return getClaims(jwt).getBody().getId();
     }
-    //    유효성을 검사한다
-    public boolean validateToken(String jwt ){
-        return this.getClaims(jwt)!=null;
+
+    /**
+     * Jwt Token의 유효성을 체크한다.
+     */
+    public boolean validateToken(String jwt) {
+        return this.getClaims(jwt) != null;
     }
 
-    public Jws<Claims> getClaims(String jwt){
-        try{
+    private Jws<Claims> getClaims(String jwt) {
+        try {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwt);
         } catch (SignatureException ex) {
             log.error("Invalid JWT signature");
@@ -60,7 +65,4 @@ public class JwtTokenProvider {
             throw ex;
         }
     }
-
-
 }
-
